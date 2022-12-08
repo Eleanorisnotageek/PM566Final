@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Eleanor Bi" />
+
+
+<title>Final Project: Analysis for Risk of Coronary Heart Disease</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PM566 Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/ksiegmund/PM566-lab12-example">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://uscbiostats.github.io/PM566/">PM566 Home</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Final Project: Analysis for Risk of Coronary Heart Disease</h1>
+<h4 class="author">Eleanor Bi</h4>
+<h4 class="date">12/7/2022</h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The Western Collaborative Group Study (WCGS), a prospective cohort studye, recruited middle-aged men (ages 39 to 59) who were employees of 10 California companies and collected data on 3154 individuals during the years 1960-1961. These subjects were primarily selected to study the relationship between behavior pattern and the risk of coronary heart disease (CHD). A number of other risk factors were also measured to provide the best possible assessment of the CHD risk associated with behavior type. Additional variables collected include age, height, weight, systolic blood pressure, diastolic blood pressure, cholesterol, smoking, and corneal arcus.</p>
+<p>The main objective of this report is to find the important factors which affects the risk of Coronary heart disease event. To finish these tasks, some exploratory analysis and visualizations are performed.</p>
+</div>
+<div id="methods-and-result" class="section level1">
+<h1>Methods and Result</h1>
+<p>The data set is provided by class PM592. I will upload the dataset on Github. Similar dataset can be also be found at <a href="https://rdrr.io/cran/epitools/man/wcgs.html" class="uri">https://rdrr.io/cran/epitools/man/wcgs.html</a>. The dataset includes the following columns (columns irrelevant are removed):</p>
+<ul>
+<li><p>chd69: Coronary heart disease event (0 = none; 1 = yes), dependent variable</p></li>
+<li><p>age: Age (age in years)</p></li>
+<li><p>*arcus: Corneal arcus (0 = none; 1 = yes)</p></li>
+<li><p>behpat: Behavior pattern</p></li>
+<li><p>chol: Cholesterol (mg/100 ml)</p></li>
+<li><p>dbp: Diastolic blood pressure (mm Hg)</p></li>
+<li><p>dibpat: Dichotomous behavior pattern</p></li>
+<li><p>height: Height (height in inches)</p></li>
+<li><p>ncigs: Smoking (Cigarettes/day)</p></li>
+<li><p>sbp: Systolic blood pressure (mm Hg)</p></li>
+<li><p>smoke: Smoking state</p></li>
+<li><p>weight: Weight (weight in pounds)</p></li>
+</ul>
+<p>Explanation for variable with the *: Corneal arcus is a condition that happens when you have a white, blue or gray crescent shape (arc) made of lipid (fatty) deposits that curves around the outer edges of the cornea of the eye. The curve can extend all around the cornea to form a ring.</p>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
+<p>The data contains some missing values as the figure above shown. The variable <code>chol</code> contains 12 missing values and <code>arcus</code> contains 2 missing values. The total number of observations are 3154, which indicates that only a few observations contains missing values. Thus observations with missing values are removed.</p>
+</div>
+<div id="descriptive-statistic" class="section level2">
+<h2>Descriptive statistic</h2>
+<p>In this section, the summarily descriptive statistics are constructed as Table1:</p>
+<table>
+<caption><strong>Table1. Comparsion between with and without CHD</strong></caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">with CHD</th>
+<th align="center">without CHD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">n</td>
+<td align="center">257</td>
+<td align="center">2897</td>
+</tr>
+<tr class="even">
+<td align="left">age (mean (SD))</td>
+<td align="center">48.49 (5.80)</td>
+<td align="center">46.08 (5.46)</td>
+</tr>
+<tr class="odd">
+<td align="left">arcus = 1 (%)</td>
+<td align="center">102 (40.0)</td>
+<td align="center">839 (29.0)</td>
+</tr>
+<tr class="even">
+<td align="left">behpat (%)</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">A1</td>
+<td align="center">30 (11.7)</td>
+<td align="center">234 ( 8.1)</td>
+</tr>
+<tr class="even">
+<td align="left">A2</td>
+<td align="center">148 (57.6)</td>
+<td align="center">1177 (40.6)</td>
+</tr>
+<tr class="odd">
+<td align="left">B3</td>
+<td align="center">61 (23.7)</td>
+<td align="center">1155 (39.9)</td>
+</tr>
+<tr class="even">
+<td align="left">B4</td>
+<td align="center">18 ( 7.0)</td>
+<td align="center">331 (11.4)</td>
+</tr>
+<tr class="odd">
+<td align="left">chol (mean (SD))</td>
+<td align="center">250.07 (49.40)</td>
+<td align="center">224.26 (42.22)</td>
+</tr>
+<tr class="even">
+<td align="left">dbp (mean (SD))</td>
+<td align="center">85.32 (10.31)</td>
+<td align="center">81.72 (9.62)</td>
+</tr>
+<tr class="odd">
+<td align="left">dibpat = Type B (%)</td>
+<td align="center">79 (30.7)</td>
+<td align="center">1486 (51.3)</td>
+</tr>
+<tr class="even">
+<td align="left">height (mean (SD))</td>
+<td align="center">69.94 (2.41)</td>
+<td align="center">69.76 (2.54)</td>
+</tr>
+<tr class="odd">
+<td align="left">ncigs (median [IQR])</td>
+<td align="center">20.00 [0.00, 30.00]</td>
+<td align="center">0.00 [0.00, 20.00]</td>
+</tr>
+<tr class="even">
+<td align="left">sbp (mean (SD))</td>
+<td align="center">135.39 (17.47)</td>
+<td align="center">128.03 (14.75)</td>
+</tr>
+<tr class="odd">
+<td align="left">smoke = Yes (%)</td>
+<td align="center">159 (61.9)</td>
+<td align="center">1343 (46.4)</td>
+</tr>
+<tr class="even">
+<td align="left">weight (mean (SD))</td>
+<td align="center">174.46 (21.57)</td>
+<td align="center">169.55 (21.01)</td>
+</tr>
+</tbody>
+</table>
+<p>In the Table1, the categorical variables such as <code>behpat</code>, <code>dibpat</code> and <code>smoke</code> are summarized as counts and proportion of each level, the approximately normally distributed numeric variables are summarized as mean and standard deviance. The ncigs is serious right skewed distributed, thus it is summarized as median and IQR.</p>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2>Exploratory Analysis</h2>
+<p><strong>Single Variable Analysis</strong></p>
+<p>According to the statistic table, proportion of Corneal arcus is different obviously between with and without CHD. Besides, Behavior pattern , Dichotomous behavior pattern and smoke can also affect the proportion of CHD according to the table above. Numerical variables are also the potential risk factors affecting CHD. However, distribution would determine the form of the numerical predictors, which needs to be revealed by some visualization method such as violin plot:</p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>As a result, the age of observation without CHD is concentrated at 40 but the CHDs are concentrated at 50 age. It is also revealed that the distribution of age is truncated that the observation is only contains the age lower than 40. The distribution of these predictors are almost symmetric bell shaped except <code>ncigs</code>, which shows the median and IQR, constructed in Table1, is more effective than mean and standard deviance.</p>
+<p><strong>Interaction</strong></p>
+<p>Although visualization in single variable way would reveal which variables are potential risk factors of CHD, the performance of each factors in sub-groups may be different. Thus to investigate that whether the risk factors performed differently among sub-groups (such as with people with different Dichotomous behavior pattern).</p>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p>As shown above, dibpat does not change the performance of these numeric factors due to the patterns are not different between type A and B. However, while <code>behpat=B4</code>, the age of people with CHD is not different with those without CHD. In other words, for people with is B4 behavior pattern, age is not a risk factor anymore. Besides, weight is not different obviously between people with and without CHD, but while <code>behpat=B4</code>, weight of people with CHD is higher obviously than those without CHD. In other words, weight is a risk factor for people with B4 behavior pattern.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Finally, the risk factors of CHD are revealed by exploary visualization analysis. According to the result, the risk factors include Corneal arcus, Behavior pattern , Dichotomous behavior pattern, smoke (as well as number of Cigarettes), age, Cholesterol and blood pressure (sbp and dbp). Besides, Behavior pattern would also affect the relationship between CHD and age/weight.</p>
+</div>
+
+<p>Copyright &copy; 2022, Eleanor Bi.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
