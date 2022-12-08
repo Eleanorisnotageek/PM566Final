@@ -7,7 +7,7 @@ navbar:
       href: index.html
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/ksiegmund/PM566-lab12-example
+      href: https://github.com/Eleanorisnotageek/PM566Final
     - text: "PM566 Home"
       href: https://uscbiostats.github.io/PM566/
 output:
